@@ -19,6 +19,8 @@ class MyHomePage extends StatelessWidget {
     Transaction('t1', 'New Shoes', 69.9, DateTime.now()),
     Transaction('t1', 'Weekly Groceries', 20.2, DateTime.now()),
   ];
+  String titleInput = '';
+  String amountInput = '';
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +38,34 @@ class MyHomePage extends StatelessWidget {
                     elevation: 5,
                   )),
             ),
+            Card(
+              elevation: 5,
+              child: Container(
+                padding: EdgeInsets.all(10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    TextField(
+                      decoration: InputDecoration(labelText: 'Title'),
+                      onChanged: (value) { this.titleInput = value; },
+                    ),
+                    TextField(
+                      decoration: InputDecoration(labelText: 'Amount'),
+                      onChanged: (value) { this.amountInput = value; },
+                    ),
+                    TextButton(
+                      child: Text('Add Transaction'),
+                      onPressed: () {
+                        print(this.titleInput);
+                        print(this.amountInput);
+                      },
+                    )
+                  ],
+                ),
+              ),
+            ),
             Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: transactions.map((tx) {
                 return Card(
                   child: Row(
@@ -63,8 +92,8 @@ class MyHomePage extends StatelessWidget {
                           Text(
                             tx.title,
                             style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                           Text(
