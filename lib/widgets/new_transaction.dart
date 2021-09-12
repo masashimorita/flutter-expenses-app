@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -59,6 +61,24 @@ class _NewTransactionState extends State<NewTransaction> {
     }
   }
 
+  Widget _buildChooseDateButton() {
+    return Platform.isIOS
+        ? CupertinoButton(
+            child: Text(
+              'Choose Date',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            onPressed: this._presentDatePicker,
+          )
+        : TextButton(
+            child: Text(
+              'Choose Date',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            onPressed: this._presentDatePicker,
+          );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -91,13 +111,7 @@ class _NewTransactionState extends State<NewTransaction> {
                     Expanded(
                       child: Text(this._generateDateString()),
                     ),
-                    TextButton(
-                      child: Text(
-                        'Choose Date',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      onPressed: this._presentDatePicker,
-                    )
+                    _buildChooseDateButton(),
                   ],
                 ),
               ),
