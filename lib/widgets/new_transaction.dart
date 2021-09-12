@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import './adaptive_flat_button.dart';
 
 class NewTransaction extends StatefulWidget {
   final Function onPressedButton;
@@ -61,24 +62,6 @@ class _NewTransactionState extends State<NewTransaction> {
     }
   }
 
-  Widget _buildChooseDateButton() {
-    return Platform.isIOS
-        ? CupertinoButton(
-            child: Text(
-              'Choose Date',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            onPressed: this._presentDatePicker,
-          )
-        : TextButton(
-            child: Text(
-              'Choose Date',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            onPressed: this._presentDatePicker,
-          );
-  }
-
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -111,7 +94,10 @@ class _NewTransactionState extends State<NewTransaction> {
                     Expanded(
                       child: Text(this._generateDateString()),
                     ),
-                    _buildChooseDateButton(),
+                    AdaptiveFlatButton(
+                      'Choose Date',
+                      this._presentDatePicker,
+                    ),
                   ],
                 ),
               ),
