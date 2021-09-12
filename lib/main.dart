@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import './widgets/transaction_list.dart';
@@ -92,9 +93,10 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   double _getWidgetHeight(AppBar appBar, double ratio) {
-    return (MediaQuery.of(context).size.height -
+    final mediaQuery = MediaQuery.of(context);
+    return (mediaQuery.size.height -
             appBar.preferredSize.height -
-            MediaQuery.of(context).padding.top) *
+            mediaQuery.padding.top) *
         ratio;
   }
 
@@ -117,7 +119,8 @@ class _MyHomePageState extends State<MyHomePage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text('Show Chart'),
-          Switch(
+          Switch.adaptive(
+            activeColor: Theme.of(context).accentColor,
             value: this._showChart,
             onChanged: (val) {
               setState(() {
@@ -162,10 +165,12 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () => _startAtNewTransaction(context),
-      ),
+      floatingActionButton: Platform.isIOS
+          ? Container()
+          : FloatingActionButton(
+              child: Icon(Icons.add),
+              onPressed: () => _startAtNewTransaction(context),
+            ),
     );
   }
 }

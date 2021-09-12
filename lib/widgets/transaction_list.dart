@@ -8,7 +8,7 @@ class TransactionList extends StatelessWidget {
 
   TransactionList(this.transactions, this.deleteTransaction);
 
-  Widget _buildNoTransactionView () {
+  Widget _buildNoTransactionView() {
     return LayoutBuilder(builder: (ctx, constraint) {
       return Column(
         children: [
@@ -29,6 +29,29 @@ class TransactionList extends StatelessWidget {
         ],
       );
     });
+  }
+
+  Widget _buildDeleteButton(BuildContext ctx, int index) {
+    return (MediaQuery.of(ctx).size.width > 500)
+        ? TextButton.icon(
+            icon: Icon(Icons.delete),
+            label: Text('Delete'),
+            style: ButtonStyle(
+              foregroundColor: MaterialStateProperty.all<Color>(
+                Theme.of(ctx).errorColor,
+              ),
+            ),
+            onPressed: () {
+              this.deleteTransaction(this.transactions[index].id);
+            },
+          )
+        : IconButton(
+            icon: Icon(Icons.delete),
+            color: Theme.of(ctx).errorColor,
+            onPressed: () {
+              this.deleteTransaction(this.transactions[index].id);
+            },
+          );
   }
 
   Widget _buildTransactionItems() {
@@ -60,13 +83,7 @@ class TransactionList extends StatelessWidget {
             subtitle: Text(
               DateFormat.yMMMd().format(this.transactions[index].date),
             ),
-            trailing: IconButton(
-              icon: Icon(Icons.delete),
-              color: Theme.of(ctx).errorColor,
-              onPressed: () {
-                this.deleteTransaction(this.transactions[index].id);
-              },
-            ),
+            trailing: _buildDeleteButton(ctx, index),
           ),
         );
       },
