@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import './widgets/transaction_list.dart';
 import './widgets/new_transaction.dart';
 import './widgets/chart.dart';
 import './models/transaction.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  // WidgetsFlutterBinding.ensureInitialized();
+  // SystemChrome.setPreferredOrientations([
+  //   DeviceOrientation.portraitUp,
+  //   DeviceOrientation.portraitDown,
+  // ]);
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -44,6 +52,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final List<Transaction> _userTransactions = [];
+  bool _showChart = false;
 
   List<Transaction> get _recentTransactions {
     return this._userTransactions.where((tx) {
@@ -89,8 +98,51 @@ class _MyHomePageState extends State<MyHomePage> {
         ratio;
   }
 
+  List<Widget> _buildPortraitWidgets(AppBar appBar) {
+    return [
+      Container(
+        height: _getWidgetHeight(appBar, 0.3),
+        child: Chart(_recentTransactions),
+      ),
+      Container(
+        height: _getWidgetHeight(appBar, 0.7),
+        child: TransactionList(_userTransactions, _deleteTransaction),
+      ),
+    ].toList();
+  }
+
+  List<Widget> _buildLandscapeWidgets(AppBar appBar) {
+    return [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text('Show Chart'),
+          Switch(
+            value: this._showChart,
+            onChanged: (val) {
+              setState(() {
+                this._showChart = val;
+              });
+            },
+          ),
+        ],
+      ),
+      this._showChart
+          ? Container(
+              height: _getWidgetHeight(appBar, 0.7),
+              child: Chart(_recentTransactions),
+            )
+          : Container(
+              height: _getWidgetHeight(appBar, 0.7),
+              child: TransactionList(_userTransactions, _deleteTransaction),
+            ),
+    ].toList();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
     final appBar = AppBar(
       title: Text('Personal Expenses'),
       actions: <Widget>[
@@ -104,16 +156,9 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: appBar,
       body: SingleChildScrollView(
         child: Column(
-          children: <Widget>[
-            Container(
-              height: _getWidgetHeight(appBar, 0.3),
-              child: Chart(_recentTransactions),
-            ),
-            Container(
-              height: _getWidgetHeight(appBar, 0.7),
-              child: TransactionList(_userTransactions, _deleteTransaction),
-            ),
-          ],
+          children: isLandscape
+              ? _buildLandscapeWidgets(appBar)
+              : _buildPortraitWidgets(appBar),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
